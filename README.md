@@ -20,67 +20,15 @@
 В Изнанке живут люди, также туда могут попасть некоторые обитатели Дома.
 Тех, кто может перемещаться в Изнанку по своему желанию называют Ходоками, а тех, кого туда забрасывает -- Прыгунами.
 
-Книга заканчивается с выпуском главных героев из интерната.
+Книга заканчивается с выпуском главных героев из интерната, после чего Дом сносят.
 Здесь много внимания уделяется вопросам, кто куда из ребят попал дальше.
 Есть те, кто полностью перешли в Изнанку, есть Спящие, они в Изнанке, но их тело осталось в Доме (например, глава Дома позаботился о том, чтобы подобным образом 
-перенесли всех Неразумных, ведь в Изнанке они просто маленькие дети и могут быть там счастливы), есть те, кто ушли в Наружность, кого-то забрали родители ещё до выпуска, двоё перешли на другой круг Дома (они переродятся и будут жить в следующем выпуске), некоторые уехали на автобусе.
+перенесли всех Неразумных, ведь в Изнанке они просто маленькие дети и могут быть там счастливы), есть те, кто ушли в Наружность, кого-то забрали родители ещё до выпуска, некоторые уехали на автобусе.
 
 Кажется, всё звучит довольно запутанно, но, надеюсь, общий смысл ясен.
 
 ### Версионность
-Здесь есть данные, которые изменяются со временем, будем отсчитывать его таким образом:
-
-Всё время поделено на выпуски, когда выпускаются одни (им к 18 в этот момент), в Доме появляются новые ребята (им по 6 лет), в этот же момент живут и другие дети (им по 12).
-Каждый выпуск длится 12 лет, которые можно поделить на две части -- старшие и младшие.
-Каждая из частей делится на 6 лет.
-
-<table class="iksweb">
-	<tbody>
-		<tr>
-			<td></td>
-			<td colspan="6">Младшие</td>
-			<td colspan="6">Старшие</td>
-		</tr>
-		<tr>
-			<td>Лет ребёнку</td>
-			<td>6</td>
-			<td>7</td>
-			<td>8</td>
-			<td>9</td>
-			<td>10</td>
-			<td>11</td>
-			<td>12</td>
-			<td>13</td>
-			<td>14</td>
-			<td>15</td>
-			<td>16</td>
-			<td>17</td>
-		</tr>
-		<tr>
-			<td>Год</td>
-			<td>1</td>
-			<td>2</td>
-			<td>3</td>
-			<td>4</td>
-			<td>5</td>
-			<td>6</td>
-			<td>1</td>
-			<td>2</td>
-			<td>3</td>
-			<td>4</td>
-			<td>5</td>
-			<td>6</td>
-		</tr>
-	</tbody>
-</table>
-
-За точку отсчёта будем брать выпуск главных героев, пусть он будет нулевой.
-
-Итого, для обозначения времени можно говорить: выпуск -1, старшие, год 3.
-Но это будет эквивалентно: выпуск 0, младшие, год 3.
-Договоримся, что за временную точку будем брать старших, пусть это будет их время.
-
-Например, один из главных героев имел кличку Вонючка, когда ему было от 6 до 10 лет, то есть в промежуток от выпуска -1, года 1 до выпуска -1 года 5.
+Здесь есть данные, которые изменяются со временем, будем отсчитывать его таким образом: номер набора, где учится ребёнок и год обучения этого набора. Набор, о котором идёт речь в книге 31 по счёту. 32 набора уже нет и не будет, Дом снесли. У ребёнка номер набора никогда не меняется.
 
 ### Сущности
 В основе будут обитатели Дома. Они делятся на детей, работников Дома и остальных (здесь будут родители детей, люди из Наружности и Изнанки -- они тоже обитатели Дома в некотором смысле).
@@ -97,6 +45,8 @@
 
 ![](https://github.com/Fawentus/DatabaseProject/blob/main/DB1.png)
 
+Работники Дома и дети будут версионными таблицами, поэтому у Обитателей с ними связь ко многим.
+
 Каждый ребёнок в конкретный промежуток времени может быть только в одной стаи,
 воспитателей и учителей у стаи может быть несколько. 
 
@@ -111,27 +61,422 @@
 
 ![](https://github.com/Fawentus/DatabaseProject/blob/main/DB2.png)
 
-### Пояснения
-`status` -- это способность перемещаться в Изнанку, её либо нет, либо человек Ходок, либо Прыгун
-
-`symbol` -- это символ стаи, к примеру, у Шестой -- это Псы, а у Четвёртой его нет
-
-`valid_[from|to]_g` -- это выпуск
-
-`valid_[from|to]_y` -- это год
-
-В `CHILD_CONSTANT` хранятся неизменяемые со временем данные о детях.
-
 ### Выбор нормальной формы
-Выбрала 2НФ. 
-
-3НФ нет из-за таблички `EMPLOYEE`.
-В ней, к примеру, поле `name` зависит от неключевых полей `inhabitant_id`, `valid_from_g`, `valid_from_y`, `valid_t_g` и `valid_t_y`, что является подмножеством неключевых полей.
-
-Этого можно было бы избежать, поступив, как в случае с `CHILD` (сделать ключевыми именно этот набор полей, а не вводить новое `employee_id`), или же разбив на две таблички.
-
-Вариант с `CHILD` не подходит, потому что у `EMPLOYEE` есть связь с табличкой `PACK_X_EMPLOYEE`, а добавлять туда ключи из нескольких полей будет неудобно.
-Вариант с разбитием на две таблички мне тоже кажется неудобным, так как табличка с id и датами не сильно информативна для пользователя и всё равно каждый раз при использовании придётся склеивать их вместе для получения имени, должности или группы -- действительно значимой информации.
+Выбрала 3НФ. Она получилась естественным образом после приведения во вторую нормальную форму.
 
 ### Выбор SCD
 Выбрала SCD2, так как у нас нет никакой текущей версии, ощущение времени в романе довольно условно.
+
+## Пункт c
+Физические модели для сущностей:
+
+### `INHABITANT` (Обитатель Дома):
+
+<!DOCTYPE html>
+<html>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>PK/FK</th>
+				<th>Название<br></th>
+				<th>Описание</th>
+				<th>Тип данных</th>
+				<th>Ограничение</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>PK</td>
+				<td>inhabitant_id</td>
+				<td>Id Обитателя</td>
+				<td>INTEGER</td>
+				<td>PRIMARY KEY</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>real_name</td>
+				<td>Настоящее имя</td>
+				<td>VARCHAR(100)</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>type</td>
+				<td>Тип Обитателя: ребёнок, работник Дома или другой</td>
+				<td>VARCHAR(100)</td>
+				<td>CHECK(type IN ('CHILD_CONSTANT', 'ANOTHER', 'EMPLOYEE'))</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
+
+### `CHILD_CONSTANT` (Неизменяемые данные о ребёнке):
+
+<!DOCTYPE html>
+<html>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>PK/FK</th>
+				<th>Название<br></th>
+				<th>Описание</th>
+				<th>Тип данных</th>
+				<th>Ограничение</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>PK, FK</td>
+				<td>inhabitant_id</td>
+				<td>Id Обитателя</td>
+				<td>INTEGER</td>
+				<td>PRIMARY KEY, REFERENCES INHABITANT(inhabitant_id)</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>disease</td>
+				<td>Болезнь ребёнка, её может и не быть</td>
+				<td>VARCHAR(100)</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>status</td>
+				<td>Способность перемещаться в Изнанку, её либо нет, либо человек Ходок, либо Прыгун</td>
+				<td>VARCHAR(100)</td>
+				<td>CHECK(status IN ('NOT', 'WALKER', 'JUMPER'))</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>set</td>
+				<td>Номер набора, где учился ребёнок</td>
+				<td>INTEGER</td>
+				<td>CHECK(set > 0 AND set < 32)</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
+
+### `ANOTHER` (Другой):
+
+<!DOCTYPE html>
+<html>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>PK/FK</th>
+				<th>Название<br></th>
+				<th>Описание</th>
+				<th>Тип данных</th>
+				<th>Ограничение</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>PK, FK</td>
+				<td>inhabitant_id</td>
+				<td>Id Обитателя</td>
+				<td>INTEGER</td>
+				<td>PRIMARY KEY, REFERENCES INHABITANT(inhabitant_id)</td>
+			</tr>
+			<tr>
+				<td>FK</td>
+				<td>group_id</td>
+				<td>Id группы</td>
+				<td>INTEGER</td>
+				<td>REFERENCES GROUP(group_id)</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>name</td>
+				<td>Кличка</td>
+				<td>VARCHAR(100)</td>
+				<td>NOT NULL</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
+
+### `CHILD` (Ребёнок):
+
+<!DOCTYPE html>
+<html>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>PK/FK</th>
+				<th>Название<br></th>
+				<th>Описание</th>
+				<th>Тип данных</th>
+				<th>Ограничение</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>FK</td>
+				<td>inhabitant_id</td>
+				<td>Id Обитателя</td>
+				<td>INTEGER</td>
+				<td>REFERENCES CHILD_CONSTANT(inhabitant_id)</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>valid_from</td>
+				<td>Возраст ребёнка, с которого эта запись валидна (включая)</td>
+				<td>INTEGER</td>
+				<td>CHECK(valid_from > 4 AND valid_from < 19)</td>
+			</tr>
+			<tr>
+				<td>FK</td>
+				<td>group_id</td>
+				<td>Id группы</td>
+				<td>INTEGER</td>
+				<td>REFERENCES GROUP(group_id)</td>
+			</tr>
+			<tr>
+				<td>FK</td>
+				<td>pack_id</td>
+				<td>Id стаи</td>
+				<td>INTEGER</td>
+				<td>REFERENCES PACK(pack_id)</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>name</td>
+				<td>Кличка</td>
+				<td>VARCHAR(100)</td>
+				<td>NOT NULL</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>post</td>
+				<td>Должность</td>
+				<td>VARCHAR(100)</td>
+				<td>NOT NULL</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>is_head_pack</td>
+				<td>Является ли вожаком стаи</td>
+				<td>BOOLEAN</td>
+				<td>DEFAULT FALSE</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>valid_to</td>
+				<td>Возраст ребёнка, до которого эта запись валидна (не включая)</td>
+				<td>INTEGER</td>
+				<td>CHECK(valid_to > 4 AND valid_to < 19)</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
+
+Дополнительно к этому есть составной PRIMARY KEY:
+PRIMARY KEY (inhabitant_id, valid_from)
+
+### `EMPLOYEE` (Работник Дома):
+
+<!DOCTYPE html>
+<html>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>PK/FK</th>
+				<th>Название<br></th>
+				<th>Описание</th>
+				<th>Тип данных</th>
+				<th>Ограничение</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>FK</td>
+				<td>inhabitant_id</td>
+				<td>Id Обитателя</td>
+				<td>INTEGER</td>
+				<td>REFERENCES INHABITANT(inhabitant_id)</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>valid_from</td>
+				<td>Возраст детей набора valid_set, с которого эта запись валидна (включая)</td>
+				<td>INTEGER</td>
+				<td>CHECK(valid_from > 4 AND valid_from < 19)</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>valid_set</td>
+				<td>Номер набора детей, для которого эта запись валидна</td>
+				<td>INTEGER</td>
+				<td>CHECK(valid_set > 0 AND valid_set < 32)</td>
+			</tr>
+			<tr>
+				<td>FK</td>
+				<td>group_id</td>
+				<td>Id группы</td>
+				<td>INTEGER</td>
+				<td>REFERENCES GROUP(group_id)</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>name</td>
+				<td>Кличка</td>
+				<td>VARCHAR(100)</td>
+				<td>NOT NULL</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>valid_to</td>
+				<td>Возраст детей набора valid_set, до которого эта запись валидна (включая)</td>
+				<td>INTEGER</td>
+				<td>CHECK(valid_to > 4 AND valid_to < 19)</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
+
+Дополнительно к этому есть составной PRIMARY KEY:
+PRIMARY KEY (inhabitant_id, valid_from, valid_set)
+
+### `PACK` (Стая):
+
+<!DOCTYPE html>
+<html>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>PK/FK</th>
+				<th>Название<br></th>
+				<th>Описание</th>
+				<th>Тип данных</th>
+				<th>Ограничение</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>PK</td>
+				<td>pack_id</td>
+				<td>Id стаи</td>
+				<td>INTEGER</td>
+				<td>PRIMARY KEY</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>name</td>
+				<td>Название</td>
+				<td>VARCHAR(100)</td>
+				<td>NOT NULL</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>symbol</td>
+				<td>Символ, его межет не быть</td>
+				<td>VARCHAR(100)</td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
+
+### `PACK_X_EMPLOYEE` (Связь между стаями и работниками Дома):
+
+<!DOCTYPE html>
+<html>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>PK/FK</th>
+				<th>Название<br></th>
+				<th>Описание</th>
+				<th>Тип данных</th>
+				<th>Ограничение</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td></td>
+				<td>inhabitant_id</td>
+				<td>Id Обитателя</td>
+				<td>INTEGER</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>valid_from</td>
+				<td>Возраст детей набора valid_set, с которого нужная запись валидна (включая)</td>
+				<td>INTEGER</td>
+				<td>CHECK(valid_from > 4 AND valid_from < 19)</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>valid_set</td>
+				<td>Номер набора детей, для которого нужная запись валидна</td>
+				<td>INTEGER</td>
+				<td>CHECK(valid_set > 0 AND valid_set < 32)</td>
+			</tr>
+			<tr>
+				<td>FK</td>
+				<td>pack_id</td>
+				<td>Id стаи</td>
+				<td>INTEGER</td>
+				<td>REFERENCES PACK(pack_id)</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
+
+Дополнительно к этому есть составной PRIMARY KEY:
+PRIMARY KEY (inhabitant_id, valid_from, valid_set, pack_id)
+и составной FOREIGN KEY:
+FOREIGN KEY (inhabitant_id, valid_from, valid_set) 
+    REFERENCES EMPLOYEE(inhabitant_id, valid_from, valid_set)
+
+### `GROUP` (Группа):
+
+<!DOCTYPE html>
+<html>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>PK/FK</th>
+				<th>Название<br></th>
+				<th>Описание</th>
+				<th>Тип данных</th>
+				<th>Ограничение</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>PK</td>
+				<td>group_id</td>
+				<td>Id группы</td>
+				<td>INTEGER</td>
+				<td>PRIMARY KEY</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>name</td>
+				<td>Название</td>
+				<td>VARCHAR(100)</td>
+				<td>NOT NULL</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
