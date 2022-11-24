@@ -280,8 +280,8 @@
 </body>
 </html>
 
-Дополнительно к этому есть составной PRIMARY KEY:
-PRIMARY KEY (inhabitant_id, valid_from)
+Дополнительно к этим ограничениям есть составной PRIMARY KEY:
+`PRIMARY KEY (inhabitant_id, valid_from)`
 
 ### `EMPLOYEE` (Работник Дома):
 
@@ -300,21 +300,21 @@ PRIMARY KEY (inhabitant_id, valid_from)
 		</thead>
 		<tbody>
 			<tr>
-				<td>FK</td>
+				<td>PK, FK</td>
 				<td>inhabitant_id</td>
 				<td>Id Обитателя</td>
 				<td>INTEGER</td>
 				<td>REFERENCES INHABITANT(inhabitant_id)</td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>PK</td>
 				<td>valid_from</td>
 				<td>Возраст детей набора valid_set, с которого эта запись валидна (включая)</td>
 				<td>INTEGER</td>
 				<td>CHECK(valid_from > 4 AND valid_from < 19)</td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>PK</td>
 				<td>valid_set</td>
 				<td>Номер набора детей, для которого эта запись валидна</td>
 				<td>INTEGER</td>
@@ -346,8 +346,8 @@ PRIMARY KEY (inhabitant_id, valid_from)
 </body>
 </html>
 
-Дополнительно к этому есть составной PRIMARY KEY:
-PRIMARY KEY (inhabitant_id, valid_from, valid_set)
+Дополнительно к этим ограничениям есть составной PRIMARY KEY:
+`PRIMARY KEY (inhabitant_id, valid_from, valid_set)`
 
 ### `PACK` (Стая):
 
@@ -408,28 +408,28 @@ PRIMARY KEY (inhabitant_id, valid_from, valid_set)
 		</thead>
 		<tbody>
 			<tr>
-				<td></td>
+				<td>PK, FK</td>
 				<td>inhabitant_id</td>
 				<td>Id Обитателя</td>
 				<td>INTEGER</td>
 				<td></td>
 			</tr>
 			<tr>
-				<td>&nbsp;</td>
+				<td>PK, FK</td>
 				<td>valid_from</td>
 				<td>Возраст детей набора valid_set, с которого нужная запись валидна (включая)</td>
 				<td>INTEGER</td>
 				<td>CHECK(valid_from > 4 AND valid_from < 19)</td>
 			</tr>
 			<tr>
-				<td>&nbsp;</td>
+				<td>PK, FK</td>
 				<td>valid_set</td>
 				<td>Номер набора детей, для которого нужная запись валидна</td>
 				<td>INTEGER</td>
 				<td>CHECK(valid_set > 0 AND valid_set < 32)</td>
 			</tr>
 			<tr>
-				<td>FK</td>
+				<td>PK, FK</td>
 				<td>pack_id</td>
 				<td>Id стаи</td>
 				<td>INTEGER</td>
@@ -440,11 +440,11 @@ PRIMARY KEY (inhabitant_id, valid_from, valid_set)
 </body>
 </html>
 
-Дополнительно к этому есть составной PRIMARY KEY:
-PRIMARY KEY (inhabitant_id, valid_from, valid_set, pack_id)
+Дополнительно к этим ограничениям есть составной PRIMARY KEY:
+`PRIMARY KEY (inhabitant_id, valid_from, valid_set, pack_id)`
 и составной FOREIGN KEY:
-FOREIGN KEY (inhabitant_id, valid_from, valid_set) 
-    REFERENCES EMPLOYEE(inhabitant_id, valid_from, valid_set)
+`FOREIGN KEY (inhabitant_id, valid_from, valid_set) 
+    REFERENCES EMPLOYEE(inhabitant_id, valid_from, valid_set)`
 
 ### `GROUP` (Группа):
 
