@@ -10,6 +10,7 @@ drop table pack;
 drop table inhabitant;
 */
 
+-- Задание 3
 -- создание схемы
 CREATE SCHEMA project;
 
@@ -78,40 +79,41 @@ CREATE TABLE PACK_X_EMPLOYEE(
 	FOREIGN KEY (inhabitant_id, valid_from, valid_set) REFERENCES EMPLOYEE(inhabitant_id, valid_from, valid_set)
 );
 
+-- Задание 4
 -- заполнение данными
 -- INHABITANT
-INSERT INTO INHABITANT (real_name, type) VALUES ('Эрик Циммерман', 'CHILD_CONSTANT'); -- Курильщик
-INSERT INTO INHABITANT (real_name, type) VALUES (NULL, 'CHILD_CONSTANT'); -- Слепой
-INSERT INTO INHABITANT (real_name, type) VALUES (NULL, 'CHILD_CONSTANT'); -- Сфинкс
-INSERT INTO INHABITANT (real_name, type) VALUES (NULL, 'CHILD_CONSTANT'); -- Рыжий
-INSERT INTO INHABITANT (real_name, type) VALUES ('Роберт Кац', 'CHILD_CONSTANT'); -- Первый ?
-INSERT INTO INHABITANT (real_name, type) VALUES (NULL, 'CHILD_CONSTANT'); -- Ромашка
+INSERT INTO INHABITANT (real_name, type) VALUES ('Эрик Циммерман', 'CHILD_CONSTANT');
+INSERT INTO INHABITANT (type) VALUES ('CHILD_CONSTANT');
+INSERT INTO INHABITANT (type) VALUES ('CHILD_CONSTANT');
+INSERT INTO INHABITANT (type) VALUES ('CHILD_CONSTANT');
+INSERT INTO INHABITANT (real_name, type) VALUES ('Роберт Кац', 'CHILD_CONSTANT');
+INSERT INTO INHABITANT (type) VALUES ('CHILD_CONSTANT');
 
-INSERT INTO INHABITANT (real_name, type) VALUES (NULL, 'EMPLOYEE'); -- Чёрный Ральф
-INSERT INTO INHABITANT (real_name, type) VALUES ('Геральд Ку', 'EMPLOYEE'); -- Акула
-INSERT INTO INHABITANT (real_name, type) VALUES ('Альфред', 'EMPLOYEE'); -- Гомер
-INSERT INTO INHABITANT (real_name, type) VALUES (NULL, 'EMPLOYEE'); -- Старик
+INSERT INTO INHABITANT (type) VALUES ('EMPLOYEE');
+INSERT INTO INHABITANT (real_name, type) VALUES ('Геральд Ку', 'EMPLOYEE');
+INSERT INTO INHABITANT (real_name, type) VALUES ('Альфред', 'EMPLOYEE');
+INSERT INTO INHABITANT (type) VALUES ('EMPLOYEE');
 
-INSERT INTO INHABITANT (real_name, type) VALUES (NULL, 'ANOTHER'); -- Русалка, она порождение Изнанки, но сама в Доме
-INSERT INTO INHABITANT (real_name, type) VALUES (NULL, 'ANOTHER'); -- Серолиций
-INSERT INTO INHABITANT (real_name, type) VALUES (NULL, 'ANOTHER'); -- Король ?
-INSERT INTO INHABITANT (real_name, type) VALUES (NULL, 'ANOTHER'); -- Крыс ?
-INSERT INTO INHABITANT (real_name, type) VALUES ('Грег Циммерман', 'ANOTHER'); -- Отец Курильщика
+INSERT INTO INHABITANT (type) VALUES ('ANOTHER');
+INSERT INTO INHABITANT (type) VALUES ('ANOTHER');
+INSERT INTO INHABITANT (type) VALUES ('ANOTHER');
+INSERT INTO INHABITANT (type) VALUES ('ANOTHER');
+INSERT INTO INHABITANT (real_name, type) VALUES ('Грег Циммерман', 'ANOTHER');
 
 -- CHILD_CONSTANT
-INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (1, 'Колясник', 'NOT', 31); -- Курильщик
-INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (2, 'Слепой', 'WALKER', 31); -- Слепой
-INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (3, 'Отсутствие обеих рук', 'JUMPER', 31); -- Сфинкс
-INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (4, 'Проблемы со спиной', 'WALKER', 31); -- Рыжий
-INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (5, 'Колясник', 'JUMPER', 1); -- Первый ?
-INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (6, 'Эпилепсия', 'NOT', 29); -- Ромашка
+INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (1, 'Колясник', 'NOT', 31);
+INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (2, 'Слепой', 'WALKER', 31);
+INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (3, 'Отсутствие обеих рук', 'JUMPER', 31);
+INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (4, 'Проблемы со спиной', 'WALKER', 31);
+INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (5, 'Колясник', 'JUMPER', 1);
+INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (6, 'Эпилепсия', 'NOT', 29);
 
 -- PACK
 INSERT INTO PACK (name, symbol) VALUES ('Первая', 'Фазан');
 INSERT INTO PACK (name, symbol) VALUES ('Вторая', 'Крыса');
 INSERT INTO PACK (name, symbol) VALUES ('Третья', 'Птица');
-INSERT INTO PACK (name, symbol) VALUES ('Четвёртая', NULL);
-INSERT INTO PACK (name, symbol) VALUES ('Шестая', 'Пёс');
+INSERT INTO PACK (name) VALUES ('Четвёртая');
+INSERT INTO PACK (name, symbol) VALUES ('Шестая', 'Пес');
 
 -- GROUP_INHABITANTS
 INSERT INTO GROUP_INHABITANTS (name) VALUES ('Наружность');
@@ -185,7 +187,32 @@ INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, vali
 INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 5, 30, 3, 18);
 INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 5, 30, 4, 18);
 INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 5, 30, 5, 18);
-
 INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 16, 31, 1, 18);
 INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 16, 31, 3, 18);
 
+-- Задание 5
+-- INSERT
+INSERT INTO INHABITANT (type) VALUES ('ANOTHER');
+INSERT INTO ANOTHER (inhabitant_id, group_id, name) VALUES (16, 4, 'Ёжик');
+
+-- SELECT
+SELECT
+    name,
+    post
+FROM employee;
+
+SELECT *
+FROM child;
+
+-- UPDATE
+UPDATE ANOTHER
+SET name='Суслик'
+WHERE name='Ёжик';
+
+UPDATE PACK
+SET symbol='Пёс'
+WHERE pack_id=5;
+
+-- DELETE
+DELETE FROM ANOTHER WHERE name='Суслик';
+DELETE FROM INHABITANT WHERE inhabitant_id=16;
