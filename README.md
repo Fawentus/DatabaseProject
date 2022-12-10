@@ -256,13 +256,6 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td>post</td>
-				<td>Должность</td>
-				<td>VARCHAR(100)</td>
-				<td>NOT NULL</td>
-			</tr>
-			<tr>
-				<td></td>
 				<td>is_head_pack</td>
 				<td>Является ли вожаком стаи</td>
 				<td>BOOLEAN</td>
@@ -331,6 +324,13 @@
 				<td></td>
 				<td>name</td>
 				<td>Кличка</td>
+				<td>VARCHAR(100)</td>
+				<td>NOT NULL</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>post</td>
+				<td>Должность</td>
 				<td>VARCHAR(100)</td>
 				<td>NOT NULL</td>
 			</tr>
