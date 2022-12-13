@@ -1,15 +1,3 @@
--- удаление всего (TODO удалить этот блок)
-/*
-drop table pack_x_employee;
-drop table employee;
-drop table another;
-drop table child;
-drop table child_constant;
-drop table group_inhabitants;
-drop table pack;
-drop table inhabitant;
-*/
-
 -- Задание 3
 -- создание схемы
 CREATE SCHEMA project;
@@ -38,7 +26,7 @@ CREATE TABLE PACK(
 
 CREATE TABLE GROUP_INHABITANTS(
     group_id serial PRIMARY KEY,
-	name VARCHAR(100) NOT NULL
+	name VARCHAR(100) CHECK (name LIKE '(%)') -- названия мест всегда указывались в скобочках
 );
 
 CREATE TABLE ANOTHER(
@@ -71,12 +59,8 @@ CREATE TABLE EMPLOYEE(
 
 CREATE TABLE PACK_X_EMPLOYEE(
     inhabitant_id INTEGER REFERENCES INHABITANT(inhabitant_id),
-	valid_from INTEGER CHECK(valid_from > 4 AND valid_from < 19),
-	valid_set INTEGER CHECK(valid_set > 0 AND valid_set < 32),
 	pack_id INTEGER REFERENCES PACK(pack_id),
-	valid_to INTEGER CHECK(valid_to > 4 AND valid_to < 19),
-	PRIMARY KEY (inhabitant_id, valid_from, valid_set, pack_id),
-	FOREIGN KEY (inhabitant_id, valid_from, valid_set) REFERENCES EMPLOYEE(inhabitant_id, valid_from, valid_set)
+	PRIMARY KEY (inhabitant_id, pack_id)
 );
 
 -- Задание 4
@@ -116,11 +100,11 @@ INSERT INTO PACK (name) VALUES ('Четвёртая');
 INSERT INTO PACK (name, symbol) VALUES ('Шестая', 'Пес');
 
 -- GROUP_INHABITANTS
-INSERT INTO GROUP_INHABITANTS (name) VALUES ('Наружность');
-INSERT INTO GROUP_INHABITANTS (name) VALUES ('Дом');
-INSERT INTO GROUP_INHABITANTS (name) VALUES ('Изнанка');
-INSERT INTO GROUP_INHABITANTS (name) VALUES ('Лес');
-INSERT INTO GROUP_INHABITANTS (name) VALUES ('Могильник');
+INSERT INTO GROUP_INHABITANTS (name) VALUES ('(Наружность)');
+INSERT INTO GROUP_INHABITANTS (name) VALUES ('(Дом)');
+INSERT INTO GROUP_INHABITANTS (name) VALUES ('(Изнанка)');
+INSERT INTO GROUP_INHABITANTS (name) VALUES ('(Лес)');
+INSERT INTO GROUP_INHABITANTS (name) VALUES ('(Могильник)');
 
 -- ANOTHER
 INSERT INTO ANOTHER (inhabitant_id, group_id, name) VALUES (11, 2, 'Русалка');
@@ -162,47 +146,39 @@ INSERT INTO EMPLOYEE (inhabitant_id, valid_from, valid_set, group_id, name, post
 INSERT INTO EMPLOYEE (inhabitant_id, valid_from, valid_set, group_id, name, post, valid_to) VALUES (10, 16, 31, 2, 'Старик', 'Учитель' , 18);
 
 -- PACK_X_EMPLOYEE
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (7, 12, 30, 3, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (7, 5, 31, 3, 14);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (7, 17, 31, 3, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (7, 12, 30, 4, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (7, 5, 31, 4, 14);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (7, 17, 31, 4, 18);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (7, 3);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (7, 4);
 
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (8, 6, 30, 1, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (8, 6, 30, 2, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (8, 6, 30, 3, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (8, 6, 30, 4, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (8, 6, 30, 5, 18);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (8, 1);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (8, 2);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (8, 3);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (8, 4);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (8, 5);
 
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (9, 12, 31, 1, 18);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (9, 1);
 
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 12, 29, 1, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 12, 29, 2, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 12, 29, 3, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 12, 29, 4, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 12, 29, 5, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 5, 30, 1, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 5, 30, 2, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 5, 30, 3, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 5, 30, 4, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 5, 30, 5, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 16, 31, 1, 18);
-INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, valid_from, valid_set, pack_id, valid_to) VALUES (10, 16, 31, 3, 18);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (10, 1);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (10, 2);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (10, 3);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (10, 4);
+INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (10, 5);
 
 -- Задание 5
 -- INSERT
 INSERT INTO INHABITANT (type) VALUES ('ANOTHER');
 INSERT INTO ANOTHER (inhabitant_id, group_id, name) VALUES (16, 4, 'Ёжик');
 
+INSERT INTO INHABITANT (type) VALUES ('CHILD_CONSTANT');
+INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (17, 'Колясник', 'NOT', 1);
+
 -- SELECT
-SELECT
+SELECT DISTINCT
     name,
     post
-FROM employee;
+FROM EMPLOYEE;
 
 SELECT *
-FROM child;
+FROM CHILD;
 
 -- UPDATE
 UPDATE ANOTHER
@@ -216,3 +192,56 @@ WHERE pack_id=5;
 -- DELETE
 DELETE FROM ANOTHER WHERE name='Суслик';
 DELETE FROM INHABITANT WHERE inhabitant_id=16;
+
+-- Задание 6
+-- Запрос 1 (GROUP BY + HAVING)
+-- В результате запроса для каждого типа INHABITANT будет выведено число известных нам настоящих имён, если их хотя бы 2
+SELECT
+    type,
+    count(real_name)
+FROM INHABITANT
+GROUP BY type
+HAVING count(real_name) >= 2;
+
+-- Запрос 2 (ORDER BY)
+-- В результате запроса будут выведены имена, должности и года выпуска из таблицы EMPLOYEE, которые будут отсортированы
+-- по году выпуска детей (по убыванию), а при равенстве -- по имени (по возрастанию)
+SELECT
+    name,
+    post,
+    valid_set
+FROM EMPLOYEE
+ORDER BY valid_set DESC, name;
+
+-- Запрос 3 (оконные функции)
+-- В результате запроса для каждой записи данных ребёнка в таблице CHILD получим возраст, с которого нам известно про
+-- него хоть что-то, результат внутри группы записей об одном и том же ребёнке отсортирован по возрасту, с которого
+-- валидна запись (по возрастанию)
+SELECT
+    *,
+    min(valid_from) OVER (partition by inhabitant_id order by valid_from) AS min_age
+FROM CHILD;
+
+-- Запрос 4 (оконные функции + ORDER BY)
+-- В результате запроса получим по каждому году выпуска (отсортированы по возрастанию) список встречаемых диагнозов
+-- (отсортированы по возрастанию для каждого года) и их колличество (оно будет нарастать внутри каждой группы)
+SELECT
+    set,
+    disease,
+    count(disease) OVER (PARTITION BY set ORDER BY disease) AS count_disease
+FROM (SELECT DISTINCT
+        set,
+        disease
+      FROM CHILD_CONSTANT) AS diseases
+ORDER BY set;
+
+-- Запрос 5 (GROUP BY + HAVING)
+-- В результате запроса получим для каждого id из таблицы EMPLOYEE, сколько записей есть про этого человека, с учётом,
+-- что эта запись относится к 31 году выпуска и их хотя бы 2
+SELECT
+    inhabitant_id,
+    count(*)
+FROM EMPLOYEE
+WHERE valid_set = 31
+GROUP BY inhabitant_id
+HAVING count(*) >= 2;

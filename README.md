@@ -189,7 +189,7 @@
 				<td>group_id</td>
 				<td>Id группы</td>
 				<td>INTEGER</td>
-				<td>REFERENCES GROUP(group_id)</td>
+				<td>REFERENCES GROUP_INHABITANTS(group_id)</td>
 			</tr>
 			<tr>
 				<td></td>
@@ -220,14 +220,14 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td>FK</td>
+				<td>PK, FK</td>
 				<td>inhabitant_id</td>
 				<td>Id Обитателя</td>
 				<td>INTEGER</td>
 				<td>REFERENCES CHILD_CONSTANT(inhabitant_id)</td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>PK</td>
 				<td>valid_from</td>
 				<td>Возраст ребёнка, с которого эта запись валидна (включая)</td>
 				<td>INTEGER</td>
@@ -238,7 +238,7 @@
 				<td>group_id</td>
 				<td>Id группы</td>
 				<td>INTEGER</td>
-				<td>REFERENCES GROUP(group_id)</td>
+				<td>REFERENCES GROUP_INHABITANTS(group_id)</td>
 			</tr>
 			<tr>
 				<td>FK</td>
@@ -318,7 +318,7 @@
 				<td>group_id</td>
 				<td>Id группы</td>
 				<td>INTEGER</td>
-				<td>REFERENCES GROUP(group_id)</td>
+				<td>REFERENCES GROUP_INHABITANTS(group_id)</td>
 			</tr>
 			<tr>
 				<td></td>
@@ -412,21 +412,7 @@
 				<td>inhabitant_id</td>
 				<td>Id Обитателя</td>
 				<td>INTEGER</td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>PK, FK</td>
-				<td>valid_from</td>
-				<td>Возраст детей набора valid_set, с которого нужная запись валидна (включая)</td>
-				<td>INTEGER</td>
-				<td>CHECK(valid_from > 4 AND valid_from < 19)</td>
-			</tr>
-			<tr>
-				<td>PK, FK</td>
-				<td>valid_set</td>
-				<td>Номер набора детей, для которого нужная запись валидна</td>
-				<td>INTEGER</td>
-				<td>CHECK(valid_set > 0 AND valid_set < 32)</td>
+				<td>REFERENCES INHABITANT(inhabitant_id)</td>
 			</tr>
 			<tr>
 				<td>PK, FK</td>
@@ -441,12 +427,9 @@
 </html>
 
 Дополнительно к этим ограничениям есть составной PRIMARY KEY:
-`PRIMARY KEY (inhabitant_id, valid_from, valid_set, pack_id)`
-и составной FOREIGN KEY:
-`FOREIGN KEY (inhabitant_id, valid_from, valid_set) 
-    REFERENCES EMPLOYEE(inhabitant_id, valid_from, valid_set)`
+`PRIMARY KEY (inhabitant_id, pack_id)`
 
-### `GROUP` (Группа):
+### `GROUP_INHABITANTS` (Группа):
 
 <!DOCTYPE html>
 <html>
@@ -474,7 +457,7 @@
 				<td>name</td>
 				<td>Название</td>
 				<td>VARCHAR(100)</td>
-				<td>NOT NULL</td>
+				<td>CHECK (name LIKE '(%)')</td>
 			</tr>
 		</tbody>
 	</table>
