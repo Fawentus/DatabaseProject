@@ -2,7 +2,7 @@
 -- создание схемы
 CREATE SCHEMA project;
 
-SET SEARCH_PATH = project;
+SET SEARCH_PATH = project, public;
 
 -- создание таблиц
 CREATE TABLE INHABITANT(
@@ -83,6 +83,9 @@ INSERT INTO INHABITANT (type) VALUES ('ANOTHER');
 INSERT INTO INHABITANT (type) VALUES ('ANOTHER');
 INSERT INTO INHABITANT (type) VALUES ('ANOTHER');
 INSERT INTO INHABITANT (real_name, type) VALUES ('Грег Циммерман', 'ANOTHER');
+INSERT INTO INHABITANT (type) VALUES ('ANOTHER');
+INSERT INTO INHABITANT (type) VALUES ('CHILD_CONSTANT');
+INSERT INTO INHABITANT (type) VALUES ('CHILD_CONSTANT');
 
 -- CHILD_CONSTANT
 INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (1, 'Колясник', 'NOT', 31);
@@ -91,6 +94,8 @@ INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (3, 'О�
 INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (4, 'Проблемы со спиной', 'WALKER', 31);
 INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (5, 'Колясник', 'JUMPER', 1);
 INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (6, 'Эпилепсия', 'NOT', 29);
+INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (17, 'Колясник', 'NOT', 1);
+INSERT INTO CHILD_CONSTANT (inhabitant_id, status, set) VALUES (18, 'NOT', 5);
 
 -- PACK
 INSERT INTO PACK (name, symbol) VALUES ('Первая', 'Фазан');
@@ -112,6 +117,7 @@ INSERT INTO ANOTHER (inhabitant_id, group_id, name) VALUES (12, 3, 'Сероли
 INSERT INTO ANOTHER (inhabitant_id, group_id, name) VALUES (13, 3, 'Король');
 INSERT INTO ANOTHER (inhabitant_id, group_id, name) VALUES (14, 3, 'Крыс');
 INSERT INTO ANOTHER (inhabitant_id, group_id, name) VALUES (15, 1, 'Батя');
+INSERT INTO ANOTHER (inhabitant_id, group_id, name) VALUES (16, 4, 'Ёжик');
 
 -- CHILD
 INSERT INTO CHILD (inhabitant_id, valid_from, group_id, pack_id, name, valid_to) VALUES (1, 15, 2, 1, 'Курильщик', 16);
@@ -165,14 +171,8 @@ INSERT INTO PACK_X_EMPLOYEE (inhabitant_id, pack_id) VALUES (10, 5);
 
 -- Задание 5
 -- INSERT
-INSERT INTO INHABITANT (type) VALUES ('ANOTHER');
-INSERT INTO ANOTHER (inhabitant_id, group_id, name) VALUES (16, 4, 'Ёжик');
-
 INSERT INTO INHABITANT (type) VALUES ('CHILD_CONSTANT');
-INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (17, 'Колясник', 'NOT', 1);
-
-INSERT INTO INHABITANT (type) VALUES ('CHILD_CONSTANT');
-INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (18, 'Неразумный', 'NOT', 20);
+INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (19, 'Неразумный', 'NOT', 20);
 INSERT INTO CHILD (inhabitant_id, valid_from, group_id, pack_id, name, valid_to) VALUES (18, 5, 2, 3, 'Птенец', 7);
 INSERT INTO CHILD (inhabitant_id, valid_from, group_id, pack_id, name, valid_to) VALUES (18, 9, 2, 3, 'Птенец', 15);
 INSERT INTO CHILD (inhabitant_id, valid_from, group_id, pack_id, name, valid_to) VALUES (18, 17, 2, 3, 'Птенец', 18);
@@ -304,3 +304,61 @@ FROM (SELECT
 WHERE (valid_set = prev_valid_set AND valid_from > prev_valid_to) OR
       (valid_set - prev_valid_set = 1 AND valid_from + 13 > prev_valid_to) OR
       (valid_set - prev_valid_set > 1);
+
+-- Задание 7
+CREATE SCHEMA view;
+
+CREATE VIEW view.V_ANOTHER AS
+SELECT *
+FROM ANOTHER;
+
+CREATE VIEW view.V_CHILD AS
+SELECT
+    inhabitant_id,
+    group_id,
+    pack_id,
+    name,
+    is_head_pack
+FROM CHILD;
+
+CREATE VIEW view.V_CHILD_CONSTANT AS
+SELECT
+    inhabitant_id,
+    substr('***' || disease, 1, 3) as disease, -- медицинские данные
+    status,
+    set
+FROM CHILD_CONSTANT;
+
+CREATE VIEW view.V_EMPLOYEE AS
+SELECT
+    inhabitant_id,
+    group_id,
+    name,
+    post
+FROM EMPLOYEE;
+
+CREATE VIEW view.V_GROUP_INHABITANTS AS
+SELECT
+    group_id,
+    name
+FROM GROUP_INHABITANTS;
+
+CREATE VIEW view.V_INHABITANT AS
+SELECT
+    inhabitant_id,
+    substr(real_name, 1, 1) || '.' as real_name,
+    type
+FROM INHABITANT;
+
+CREATE VIEW view.V_PACK AS
+SELECT
+    pack_id,
+    name,
+    substr(symbol, 1, 1) || '...' || substr(symbol, length(symbol), 1) as symbol
+FROM PACK;
+
+CREATE VIEW view.V_PACK_X_EMPLOYEE AS
+SELECT
+    inhabitant_id,
+    pack_id
+FROM PACK_X_EMPLOYEE;
