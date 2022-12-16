@@ -362,3 +362,82 @@ SELECT
     inhabitant_id,
     pack_id
 FROM PACK_X_EMPLOYEE;
+
+-- Задание 8
+-- Запрос 1
+-- В результате получим статистику, сколько стай поменял каждый из детей
+CREATE VIEW view.COUNT_PACKS_FOR_CHILD AS
+SELECT
+    inhabitant_id,
+    set,
+    count(pack_id) as count_pack
+FROM (SELECT DISTINCT
+          CHILD_CONSTANT.inhabitant_id,
+          set,
+          pack_id
+      FROM CHILD_CONSTANT
+      LEFT JOIN CHILD
+          ON CHILD_CONSTANT.inhabitant_id = CHILD.inhabitant_id) AS PACKS_FOR_CHILD
+GROUP BY inhabitant_id, set
+ORDER BY inhabitant_id;
+
+-- Запрос 2
+-- В результате для каждого из работников дома получим названия и id стай, с которыми они работали
+CREATE VIEW view.PACKS_FOR_EMPLOYEE AS
+SELECT DISTINCT
+    EMPLOYEE.inhabitant_id,
+    post,
+    pack_id,
+    PACKS.name
+FROM EMPLOYEE
+LEFT JOIN (SELECT
+               PACK.pack_id,
+               inhabitant_id,
+               name
+           FROM PACK
+           LEFT JOIN PACK_X_EMPLOYEE
+               ON PACK.pack_id = PACK_X_EMPLOYEE.pack_id) AS PACKS
+    ON EMPLOYEE.inhabitant_id = PACKS.inhabitant_id
+ORDER BY inhabitant_id, post, pack_id;
+
+-- Запрос 3
+-- В результате для каждой группы получим число обитателей Дома (по каждому типу отдельно и по всем вместе), причём
+-- работники и дети могут давать вклад в несколько групп, но для каждой из групп вклад не может превышать 1
+CREATE VIEW view.INHABITANTS_FOR_GROUP AS
+SELECT
+    group_id,
+    count_another,
+    count_child,
+    count_employee,
+    count_another + count_child + count_employee as count_all
+FROM (SELECT
+            group_id,
+            count_another,
+            count_child,
+            count(inhabitant_id) as count_employee
+      FROM (SELECT
+                ANOTHER_AND_CHILD_GROUP.group_id,
+                count_another,
+                count_child,
+                inhabitant_id
+              FROM (SELECT
+                        group_id,
+                        count_another,
+                        count(inhabitant_id) as count_child
+                  FROM (SELECT DISTINCT
+                            ANOTHER_GROUP.group_id,
+                            count_another,
+                            inhabitant_id
+                        FROM (SELECT
+                                  GROUP_INHABITANTS.group_id,
+                                  count(inhabitant_id) as count_another
+                              FROM GROUP_INHABITANTS
+                              LEFT JOIN ANOTHER
+                                  ON GROUP_INHABITANTS.group_id = ANOTHER.group_id
+                              GROUP BY GROUP_INHABITANTS.group_id) AS ANOTHER_GROUP
+                        LEFT JOIN CHILD
+                            ON ANOTHER_GROUP.group_id = CHILD.group_id) AS _
+                  GROUP BY group_id, count_another) AS ANOTHER_AND_CHILD_GROUP
+              LEFT JOIN EMPLOYEE
+                  ON ANOTHER_AND_CHILD_GROUP.group_id = EMPLOYEE.group_id) AS _
+      GROUP BY group_id, count_another, count_child) AS _;
