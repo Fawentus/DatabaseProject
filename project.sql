@@ -171,6 +171,12 @@ INSERT INTO ANOTHER (inhabitant_id, group_id, name) VALUES (16, 4, 'Ёжик');
 INSERT INTO INHABITANT (type) VALUES ('CHILD_CONSTANT');
 INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (17, 'Колясник', 'NOT', 1);
 
+INSERT INTO INHABITANT (type) VALUES ('CHILD_CONSTANT');
+INSERT INTO CHILD_CONSTANT (inhabitant_id, disease, status, set) VALUES (18, 'Неразумный', 'NOT', 20);
+INSERT INTO CHILD (inhabitant_id, valid_from, group_id, pack_id, name, valid_to) VALUES (18, 5, 2, 3, 'Птенец', 7);
+INSERT INTO CHILD (inhabitant_id, valid_from, group_id, pack_id, name, valid_to) VALUES (18, 9, 2, 3, 'Птенец', 15);
+INSERT INTO CHILD (inhabitant_id, valid_from, group_id, pack_id, name, valid_to) VALUES (18, 17, 2, 3, 'Птенец', 18);
+
 -- SELECT
 SELECT DISTINCT
     name,
@@ -245,3 +251,56 @@ FROM EMPLOYEE
 WHERE valid_set = 31
 GROUP BY inhabitant_id
 HAVING count(*) >= 2;
+
+-- Запрос 6 (GROUP BY + HAVING)
+-- В результате запроса получим для каждого работника число стай, к которым он относится, при условии,
+-- что он относится хотя бы к одной стае, но не ко всем сразу
+SELECT
+    EMPLOYEE_ID.inhabitant_id,
+    count(pack_id)
+FROM PACK_X_EMPLOYEE
+RIGHT JOIN (SELECT
+                inhabitant_id
+            FROM EMPLOYEE
+            GROUP BY inhabitant_id) AS EMPLOYEE_ID ON EMPLOYEE_ID.inhabitant_id=PACK_X_EMPLOYEE.inhabitant_id
+GROUP BY EMPLOYEE_ID.inhabitant_id
+HAVING count(pack_id) BETWEEN 1 AND
+       (SELECT
+            count(PACK.pack_id)
+        FROM PACK)-1;
+
+-- Запрос 7 (оконные функции)
+-- В результате запроса получим интервалы разрывов в версионности у таблицы CHILD
+
+SELECT
+    inhabitant_id,
+    prev_valid_to,
+    valid_from
+FROM (SELECT
+          inhabitant_id,
+          lag(valid_to) OVER (PARTITION BY inhabitant_id ORDER BY valid_from) AS prev_valid_to,
+          valid_from
+      FROM CHILD
+     ) AS PREV
+WHERE valid_from > prev_valid_to;
+
+-- Запрос 8 (оконные функции)
+-- В результате запроса получим интервалы разрывов в версионности у таблицы EMPLOYEE, отличается от прошлого запроса тем,
+-- что у работников set также является версионым
+
+SELECT
+    inhabitant_id,
+    prev_valid_set,
+    valid_set,
+    prev_valid_to,
+    valid_from
+FROM (SELECT
+          inhabitant_id,
+          valid_set,
+          lag(valid_to) OVER (PARTITION BY inhabitant_id ORDER BY valid_set, valid_from) AS prev_valid_to,
+          lag(valid_set) OVER (PARTITION BY inhabitant_id ORDER BY valid_set) AS prev_valid_set,
+          valid_from
+      FROM EMPLOYEE) AS PREV
+WHERE (valid_set = prev_valid_set AND valid_from > prev_valid_to) OR
+      (valid_set - prev_valid_set = 1 AND valid_from + 13 > prev_valid_to) OR
+      (valid_set - prev_valid_set > 1);
